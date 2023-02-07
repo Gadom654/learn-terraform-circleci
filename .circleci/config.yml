@@ -26,7 +26,7 @@ jobs:
       - run:
           name: terraform
           command: |
-            ls -ltr ~/.ssh
+            ls -ltr /home
             terraform apply -auto-approve tfapply
       - persist_to_workspace:
           root: .
