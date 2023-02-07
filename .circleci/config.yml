@@ -7,13 +7,9 @@ jobs:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "86:f4:a9:08:e4:76:5f:15:35:04:a8:a6:a5:b5:4a:be"  
       - run:
           name: terraform init & plan
           command: |
-            ls -ltr ~/.ssh
             terraform init -input=false
             terraform plan -out tfapply -var-file terraform.tfvars
       - persist_to_workspace:
@@ -27,12 +23,10 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - add_ssh_keys:
-          fingerprints:
-            - "86:f4:a9:08:e4:76:5f:15:35:04:a8:a6:a5:b5:4a:be"
       - run:
           name: terraform
           command: |
+            ls -ltr ~/.ssh
             terraform apply -auto-approve tfapply
       - persist_to_workspace:
           root: .
