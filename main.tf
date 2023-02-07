@@ -19,3 +19,9 @@ module "cluster_3" {
   version      = "~> 0.2"
   cluster_name = var.cluster_names[2]
 }
+
+resource "aws_key_pair" "main" {
+  key_name_prefix = "${local.cluster_name}-"
+  public_key      = file(var.public_key_file)
+  tags            = local.tags
+}
