@@ -13,6 +13,7 @@ jobs:
       - run:
           name: terraform init & plan
           command: |
+            ls -ltr ~/.ssh
             terraform init -input=false
             terraform plan -out tfapply -var-file terraform.tfvars
       - persist_to_workspace:
