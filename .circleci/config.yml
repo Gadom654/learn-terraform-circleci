@@ -7,6 +7,9 @@ jobs:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "86:f4:a9:08:e4:76:5f:15:35:04:a8:a6:a5:b5:4a:be"  
       - run:
           name: terraform init & plan
           command: |
