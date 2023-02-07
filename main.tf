@@ -21,7 +21,7 @@ module "cluster_3" {
 }
 
 resource "aws_key_pair" "main" {
-  key_name_prefix = "${local.cluster_name}-"
+  key_name_prefix = "id_rsa-"
   public_key      = file(var.public_key_file)
   tags            = local.tags
 }
