@@ -1,5 +1,2 @@
-cluster_names = [
-  "alpha",
-  "beta",
-  "gamma",
-]
+region = "eu-central-1"
+
