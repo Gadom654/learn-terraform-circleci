@@ -1,4 +1,1 @@
-cluster_name = [
-  "apache",
-  "flask",
-]
+cluster_name = "apache"
