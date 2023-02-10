@@ -15,7 +15,7 @@ variable "cidr_block" {
   default     = "172.31.0.0/16"
 }
 
-variable "tags" {
+variable "tags_network" {
   type        = map(string)
   description = "A set of tags to assign to the created resources."
   default     = {}
