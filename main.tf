@@ -17,11 +17,11 @@ locals {
 #------------------------------------------------------------------------------#
 # Not needed for test
 # Performs 'ImportKeyPair' API operation (not 'CreateKeyPair')
-#resource "aws_key_pair" "main" {
-#  key_name_prefix = "${var.cluster_name}-"
-#  public_key      = file(var.public_key_file)
-#  tags            = local.tags
-#}
+resource "aws_key_pair" "main" {
+  key_name_prefix = "${var.cluster_name}-"
+  public_key      = file(var.public_key_file)
+  tags            = local.tags
+}
 #------------------------------------------------------------------------------#
 # Network
 #------------------------------------------------------------------------------#
@@ -176,7 +176,7 @@ resource "aws_instance" "apache" {
   ami           = data.aws_ami.ubuntu.image_id
   instance_type = var.apache_instance_type
   subnet_id     = aws_subnet.main.id
-#  key_name      = aws_key_pair.main.key_name
+  key_name      = aws_key_pair.main.key_name
   vpc_security_group_ids = [
     aws_security_group.egress.id,
     aws_security_group.ingress_internal.id,
@@ -207,7 +207,7 @@ resource "aws_instance" "flasks" {
   instance_type               = var.flask_instance_type
   subnet_id                   = aws_subnet.main.id
   associate_public_ip_address = true
-#  key_name                    = aws_key_pair.main.key_name
+  key_name                    = aws_key_pair.main.key_name
   vpc_security_group_ids = [
     aws_security_group.egress.id,
     aws_security_group.ingress_internal.id,
