@@ -1,4 +1,4 @@
-cluster_names = [
+cluster_name = [
   "apache",
   "flask",
 ]
