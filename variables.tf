@@ -45,13 +45,13 @@ variable "public_key_file" {
 variable "vpc_id" {
   type        = string
   description = "**This is an optional variable with a default value of null**. ID of the AWS VPC in which to create the cluster. If null, the default VPC is used."
-  default     = null
+  default     = aws_vpc.main.id
 }
 
 variable "subnet_id" {
   type        = string
   description = "**This is an optional variable with a default value of null**. ID of the AWS subnet in which to create the cluster. If null, one of the default subnets in the default VPC is used. The subnet must be in the VPC specified by the \"vpc_id\" variable, otherwise an error occurs."
-  default     = null
+  default     = aws_subnet.main.id
 }
 
 
