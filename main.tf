@@ -124,15 +124,15 @@ resource "aws_security_group" "ingress_ssh" {
 #------------------------------------------------------------------------------#
 
 # EIP for apache node because it must know its public IP during initialisation
-#resource "aws_eip" "apache" {
-#  vpc  = true
-#  tags = local.tags
-#}
-#
-#resource "aws_eip_association" "apache" {
-#  allocation_id = aws_eip.apache.id
-#  instance_id   = aws_instance.apache.id
-#}
+resource "aws_eip" "apache" {
+  vpc  = true
+  tags = local.tags
+}
+
+resource "aws_eip_association" "apache" {
+  allocation_id = aws_eip.apache.id
+  instance_id   = aws_instance.apache.id
+}
 
 #------------------------------------------------------------------------------#
 # Bootstrap token for kubeadm
@@ -192,8 +192,7 @@ resource "aws_instance" "apache" {
       node              = "apache",
       token             = local.token,
       cidr              = var.pod_network_cidr_block
-      apache_public_ip  = null, 
-#aws_eip.apache.public_ip,
+      apache_public_ip  = aws_eip.apache.public_ip,
       apache_private_ip = null,
       flask_index      = null
     }
