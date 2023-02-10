@@ -200,10 +200,11 @@ resource "aws_instance" "apache" {
 }
 
 resource "aws_instance" "flasks" {
+  count                       = var.num_flasks
   ami                         = data.aws_ami.ubuntu.image_id
   instance_type               = var.flask_instance_type
   subnet_id                   = var.subnet_id
-#  associate_public_ip_address = true
+  associate_public_ip_address = true
 #  key_name                    = aws_key_pair.main.key_name
   vpc_security_group_ids = [
     aws_security_group.egress.id,
