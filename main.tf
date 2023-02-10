@@ -192,7 +192,7 @@ resource "aws_instance" "apache" {
       node              = "apache",
       token             = local.token,
       cidr              = var.pod_network_cidr_block
-      apache_public_ip  = aws_eip.apache.public_ip,
+#      apache_public_ip  = aws_eip.apache.public_ip,
       apache_private_ip = null,
       flask_index      = null
     }
