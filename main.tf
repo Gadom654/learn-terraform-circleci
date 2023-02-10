@@ -63,7 +63,7 @@ resource "aws_route_table_association" "main" {
 resource "aws_security_group" "egress" {
   name        = "${var.cluster_name}-egress"
   description = "Allow all outgoing traffic to everywhere"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
   tags        = local.tags
   egress {
     protocol    = -1
@@ -76,7 +76,7 @@ resource "aws_security_group" "egress" {
 resource "aws_security_group" "ingress_internal" {
   name        = "${var.cluster_name}-ingress-internal"
   description = "Allow all incoming traffic from nodes and Pods in the cluster"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
   tags        = local.tags
   ingress {
     protocol    = -1
@@ -98,7 +98,7 @@ resource "aws_security_group" "ingress_internal" {
 resource "aws_security_group" "ingress_k8s" {
   name        = "${var.cluster_name}-ingress-k8s"
   description = "Allow incoming Kubernetes API requests (TCP/6443) from outside the cluster"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
   tags        = local.tags
   ingress {
     protocol    = "tcp"
@@ -111,7 +111,7 @@ resource "aws_security_group" "ingress_k8s" {
 resource "aws_security_group" "ingress_ssh" {
   name        = "${var.cluster_name}-ingress-ssh"
   description = "Allow incoming SSH traffic (TCP/22) from outside the cluster"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
   tags        = local.tags
   ingress {
     protocol    = "tcp"
@@ -175,7 +175,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "apache" {
   ami           = data.aws_ami.ubuntu.image_id
   instance_type = var.apache_instance_type
-  subnet_id     = var.subnet_id
+  subnet_id     = aws_subnet.main.id
 #  key_name      = aws_key_pair.main.key_name
   vpc_security_group_ids = [
     aws_security_group.egress.id,
@@ -205,7 +205,7 @@ resource "aws_instance" "flasks" {
   count                       = var.num_flasks
   ami                         = data.aws_ami.ubuntu.image_id
   instance_type               = var.flask_instance_type
-  subnet_id                   = var.subnet_id
+  subnet_id                   = aws_subnet.main.id
   associate_public_ip_address = true
 #  key_name                    = aws_key_pair.main.key_name
   vpc_security_group_ids = [
