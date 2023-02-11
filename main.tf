@@ -200,8 +200,7 @@ resource "aws_instance" "apache" {
   )
 }
 
-resource "aws_instance" "flasks" {
-  count                       = var.num_flasks
+resource "aws_instance" "flask" {
   ami                         = data.aws_ami.ubuntu.image_id
   instance_type               = var.flask_instance_type
   subnet_id                   = aws_subnet.main.id
@@ -236,15 +235,12 @@ resource "null_resource" "wait_for_bootstrap_to_finish" {
     while true; do
       sleep 2
       ! ssh ubuntu@${aws_eip.apache.public_ip} [[ -f /home/ubuntu/done ]] >/dev/null && continue
-      %{for flask_public_ip in aws_instance.flasks[*].public_ip~}
-      ! ssh ubuntu@${flask_public_ip} [[ -f /home/ubuntu/done ]] >/dev/null && continue
-      %{endfor~}
-      break
+      ! ssh ubuntu@${aws_instance.flask.flask_public_ip} [[ -f /home/ubuntu/done ]] >/dev/null && continue
     done
     EOF
   }
   triggers = {
-    instance_ids = join(",", concat([aws_instance.apache.id], aws_instance.flasks[*].id))
+    instance_ids = join(",", concat([aws_instance.apache.id], aws_instance.flask.id))
   }
 }
 

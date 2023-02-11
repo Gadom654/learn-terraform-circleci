@@ -1,12 +1,8 @@
 output "cluster_nodes" {
-  value = [
-    for i in concat([aws_instance.apache], aws_instance.flasks, ) : {
-      name       = i.tags["terraform-kubeadm:node"]
-      subnet_id  = i.subnet_id
-      private_ip = i.private_ip
-      public_ip  = i.tags["terraform-kubeadm:node"] == "apache" ? aws_eip.apache.public_ip : i.public_ip
-    }
-  ]
+  name       = aws_instance.flask.tags["terraform-kubeadm:node"]
+  subnet_id  = aws_instance.flask.subnet_id
+  private_ip = aws_instance.flask.private_ip
+  public_ip  = aws_instance.flask.tags["terraform-kubeadm:node"] == "apache" ? aws_eip.apache.public_ip : i.public_ip
   description = "Name, public and private IP address, and subnet ID of all nodes of the created cluster."
 }
 
