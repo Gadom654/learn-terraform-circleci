@@ -27,8 +27,7 @@ jobs:
       - run:
           name: terraform
           command: |
-            ls -ltra ~
-            terraform apply -auto-approve tfapply
+            terraform apply -auto-approve tfapply -lock=false
       - persist_to_workspace:
           root: .
           paths:
@@ -43,7 +42,7 @@ jobs:
       - run:
           name: terraform create destroy plan
           command: |
-            terraform plan -destroy -out tfdestroy -var-file terraform.tfvars
+            terraform plan -destroy -out tfdestroy -var-file terraform.tfvars -lock=false
       - persist_to_workspace:
           root: .
           paths:
@@ -56,7 +55,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: terraform destroy
+          name: terraform destroy -lock=false
           command: |
             terraform apply -auto-approve tfdestroy
 workflows:
