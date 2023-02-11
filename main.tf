@@ -240,7 +240,7 @@ resource "null_resource" "wait_for_bootstrap_to_finish" {
     EOF
   }
   triggers = {
-    instance_ids = join(",",aws_instance.apache.id, aws_instance.flask.id)
+    instance_ids = join(",",[aws_instance.apache.id, aws_instance.flask.id])
   }
 }
 
