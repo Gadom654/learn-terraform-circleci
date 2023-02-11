@@ -65,7 +65,7 @@ kubectl --kubeconfig /home/ubuntu/admin.conf config set-cluster kubernetes --ser
 kubeadm join "${apache_private_ip}:6443" \
   --token "${token}" \
   --discovery-token-unsafe-skip-ca-verification \
-  --node-name flask-${flask_index}
+  --node-name flask
 %{~ endif }
 
 # Indicate completion
