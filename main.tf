@@ -7,7 +7,7 @@ provider "aws" {
 #------------------------------------------------------------------------------#
 # Common local values
 #------------------------------------------------------------------------------#
-#
+
 locals {
   tags = merge(var.tags, { "terraform-kubeadm:cluster" = var.cluster_name })
 }
