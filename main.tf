@@ -15,7 +15,7 @@ locals {
 #------------------------------------------------------------------------------#
 # Key pair
 #------------------------------------------------------------------------------#
-# Not needed for test
+
 # Performs 'ImportKeyPair' API operation (not 'CreateKeyPair')
 resource "aws_key_pair" "main" {
   key_name_prefix = "${var.cluster_name}"
@@ -196,7 +196,6 @@ resource "aws_instance" "apache" {
       cidr              = var.pod_network_cidr_block
       apache_public_ip  = aws_eip.apache.public_ip,
       apache_private_ip = null,
-      flask_index      = null
     }
   )
 }
@@ -213,7 +212,7 @@ resource "aws_instance" "flasks" {
     aws_security_group.ingress_internal.id,
     aws_security_group.ingress_ssh.id
   ]
-  tags      = merge(local.tags, { "terraform-kubeadm:node" = "flask-${count.index}" })
+  tags      = merge(local.tags, { "terraform-kubeadm:node" = "flask" })
   user_data = templatefile(
     "${path.module}/user-data.tftpl",
     {
@@ -222,7 +221,6 @@ resource "aws_instance" "flasks" {
       cidr              = null,
       apache_public_ip  = null,
       apache_private_ip = aws_instance.apache.private_ip,
-      flask_index      = count.index
     }
   )
 }
