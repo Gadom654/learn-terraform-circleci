@@ -18,7 +18,7 @@ locals {
 # Not needed for test
 # Performs 'ImportKeyPair' API operation (not 'CreateKeyPair')
 resource "aws_key_pair" "main" {
-  key_name_prefix = "${var.cluster_name}-"
+  key_name_prefix = "${var.cluster_name}"
   public_key      = file(var.public_key_file)
   tags            = local.tags
 }
