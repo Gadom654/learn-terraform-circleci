@@ -27,7 +27,7 @@ jobs:
       - run:
           name: terraform
           command: |
-            terraform apply -auto-approve tfapply -lock=false
+            terraform apply -lock=false -auto-approve tfapply
       - persist_to_workspace:
           root: .
           paths:
