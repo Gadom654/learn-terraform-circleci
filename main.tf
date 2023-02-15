@@ -126,15 +126,15 @@ resource "aws_security_group" "ingress_ssh" {
 #------------------------------------------------------------------------------#
 
 # EIP for apache node because it must know its public IP during initialisation
-resource "aws_eip" "apache" {
-  vpc  = true
-  tags = local.tags
-}
+# resource "aws_eip" "apache" {
+#   vpc  = true
+#   tags = local.tags
+# }
 
-resource "aws_eip_association" "apache" {
-  allocation_id = aws_eip.apache.id
-  instance_id   = aws_instance.apache.id
-}
+# resource "aws_eip_association" "apache" {
+#   allocation_id = aws_eip.apache.id
+#   instance_id   = aws_instance.apache.id
+# }
 
 #------------------------------------------------------------------------------#
 # Bootstrap token for kubeadm
@@ -194,7 +194,7 @@ resource "aws_instance" "apache" {
       node              = "apache",
       token             = local.token,
       cidr              = var.pod_network_cidr_block
-      apache_public_ip  = aws_eip.apache.public_ip,
+      apache_public_ip  = aws_instance.apache.public_ip,
       apache_private_ip = null,
     }
   )
@@ -234,7 +234,7 @@ resource "null_resource" "wait_for_bootstrap_to_finish" {
     alias ssh='ssh -q -i ${var.private_key_file} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
     while true; do
       sleep 2
-      ! ssh ubuntu@${aws_eip.apache.public_ip} [[ -f /home/ubuntu/done ]] >/dev/null && continue
+      ! ssh ubuntu@${aws_instance.apache.public_ip} [[ -f /home/ubuntu/done ]] >/dev/null && continue
       ! ssh ubuntu@${aws_instance.flask.public_ip} [[ -f /home/ubuntu/done ]] >/dev/null && continue
       break
     done
@@ -248,15 +248,15 @@ resource "null_resource" "wait_for_bootstrap_to_finish" {
 #------------------------------------------------------------------------------#
 # Download kubeconfig file from apache node to local machine
 #------------------------------------------------------------------------------#
-
-resource "null_resource" "download_kubeconfig_file" {
-  provisioner "local-exec" {
-    command = <<-EOF
-    alias scp='scp -q -i ${var.private_key_file} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
-    scp ubuntu@${aws_eip.apache.public_ip}:/home/ubuntu/admin.conf ${var.kubeconfig != null ? var.kubeconfig : "${var.cluster_name}.conf"} >/dev/null
-    EOF
-  }
-  triggers = {
-    wait_for_bootstrap_to_finish = null_resource.wait_for_bootstrap_to_finish.id
-  }
-}
+# 
+# resource "null_resource" "download_kubeconfig_file" {
+#   provisioner "local-exec" {
+#     command = <<-EOF
+#     alias scp='scp -q -i ${var.private_key_file} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+#     scp ubuntu@${aws_eip.apache.public_ip}:/home/ubuntu/admin.conf ${var.kubeconfig != null ? var.kubeconfig : "${var.cluster_name}.conf"} >/dev/null
+#     EOF
+#   }
+#   triggers = {
+#     wait_for_bootstrap_to_finish = null_resource.wait_for_bootstrap_to_finish.id
+#   }
+# }
