@@ -61,9 +61,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: terraform destroy -lock=false
+          name: terraform destroy
           command: |
-            terraform apply -auto-approve tfdestroy
+            terraform apply -auto-approve tfdestroy -lock=false
 workflows:
   version: 2.1
   plan_approve_apply:
