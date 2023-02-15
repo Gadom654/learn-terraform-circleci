@@ -63,7 +63,7 @@ jobs:
       - run:
           name: terraform destroy
           command: |
-            terraform apply -auto-approve tfdestroy -lock=false
+            terraform apply -auto-approve -lock=false tfdestroy
 workflows:
   version: 2.1
   plan_approve_apply:
