@@ -40,6 +40,7 @@ jobs:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     resource_class: small
     steps:
+      - checkout
       - attach_workspace:
           at: .
       - run:
@@ -56,6 +57,7 @@ jobs:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     resource_class: small
     steps:
+      - checkout
       - attach_workspace:
           at: .
       - run:
