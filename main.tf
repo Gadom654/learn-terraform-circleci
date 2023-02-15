@@ -125,7 +125,7 @@ resource "aws_security_group" "ingress_ssh" {
 # Elastic IP for apache node
 #------------------------------------------------------------------------------#
 
-EIP for apache node because it must know its public IP during initialisation
+#EIP for apache node because it must know its public IP during initialisation
 resource "aws_eip" "apache" {
   vpc  = true
   tags = local.tags
