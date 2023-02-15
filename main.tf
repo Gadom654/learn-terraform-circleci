@@ -236,6 +236,7 @@ resource "null_resource" "wait_for_bootstrap_to_finish" {
       sleep 2
       ! ssh ubuntu@${aws_eip.apache.public_ip} [[ -f /home/ubuntu/done ]] >/dev/null && continue
       ! ssh ubuntu@${aws_instance.flask.public_ip} [[ -f /home/ubuntu/done ]] >/dev/null && continue
+      break
     done
     EOF
   }
