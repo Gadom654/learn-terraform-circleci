@@ -54,7 +54,8 @@ kubeadm init \
 
 # Prepare kubeconfig file for downloading
 cp /etc/kubernetes/admin.conf /home/ubuntu
-chown ubuntu:ubuntu /home/ubuntu/admin.conf 
+sudo chown ubuntu:ubuntu /home/ubuntu/admin.conf 
+sudo chmod 700 /home/ubuntu/admin.conf
 kubectl --kubeconfig /home/ubuntu/admin.conf config set-cluster kubernetes --server "https://${apache_public_ip}:6443"
 %{~ endif ~}
 
