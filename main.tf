@@ -78,6 +78,7 @@ resource "aws_security_group" "apache" {
 resource "aws_security_group" "flask" {
   name_prefix = "flask_"
   vpc_id      = aws_vpc.vpc.id
+}
 
 # Create EC2 instance for Apache server
 resource "aws_instance" "apache" {
