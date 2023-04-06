@@ -1,40 +1,146 @@
-resource "aws_instance" "flask" {
-  ami           = "ami-0c94855ba95c71c99"
-  instance_type = "t2.micro"
-  key_name      = "my-key"
-  vpc_security_group_ids = [aws_security_group.flask.id]
+# Create VPC
+resource "aws_vpc" "vpc" {
+  cidr_block = "10.0.0.0/16"
+}
 
-  subnet_id = aws_subnet.public.id
+# Create internet gateway
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.vpc.id
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo yum -y update",
-      "sudo yum -y install python3-pip",
-      "sudo pip3 install flask",
-    ]
+# Create subnet for Flask server
+resource "aws_subnet" "web_subnet" {
+  cidr_block = "10.0.1.0/24"
+  vpc_id     = aws_vpc.vpc.id
+}
+
+# Definiujemy grupę bezpieczeństwa
+resource "aws_security_group" "web" {
+  name_prefix = "web_"
+  vpc_id      = aws_vpc.vpc.id
+  
+  # Otwieramy port 80
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "flask"
+  # Otwieramy port 22 tylko dla połączeń z wewnętrznej sieci
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]
+  }
+
+  # Otwieramy port 5000 tylko dla połączeń z wewnętrznej sieci
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]
+  }
+  
+  # Otwieramy port 80 między serwerami
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    security_groups = [aws_security_group.apache.id]
+  }
+
+  # Otwieramy port 5000 między serwerami
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    security_groups = [aws_security_group.flask.id]
+  }
+  
+  # Zamykamy port 22 z publicznej sieci
+  egress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
+# Definiujemy regułę dla serwera Apache
+resource "aws_security_group" "apache" {
+  name_prefix = "apache_"
+  vpc_id      = aws_vpc.main.id
+}
+
+# Definiujemy regułę dla serwera Flask
+resource "aws_security_group" "flask" {
+  name_prefix = "flask_"
+  vpc_id      = aws_vpc.main.id
+}
+
+# Create EC2 instance for Apache server
 resource "aws_instance" "apache" {
   ami           = "ami-0c94855ba95c71c99"
   instance_type = "t2.micro"
   key_name      = "my-key"
-  vpc_security_group_ids = [aws_security_group.apache.id]
+  subnet_id     = aws_subnet.web_subnet.id
+  vpc_security_group_ids = [
+    aws_security_group.web.id,
+    aws_security_group.apache.id,
+    ]
 
-  subnet_id = aws_subnet.public.id
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("~/.ssh/id_rsa")
+    host        = self.public_ip
+  }
 
   provisioner "remote-exec" {
     inline = [
-      "sudo yum -y update",
-      "sudo yum -y install httpd",
+      "sudo yum update -y",
+      "sudo yum install -y httpd",
+      "sudo systemctl start httpd",
+      "sudo systemctl enable httpd"
+    ]
+  }
+}
+
+# Create EC2 instance for Flask server
+resource "aws_instance" "flask" {
+  ami           = "ami-0c94855ba95c71c99"
+  instance_type = "t2.micro"
+  key_name      = "my-key"
+  subnet_id     = aws_subnet.web_subnet.id
+  vpc_security_group_ids = [
+    aws_security_group.web.id,
+    aws_security_group.flask.id,
+    ]
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("~/.ssh/id_rsa")
+    host        = self.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum update -y",
+      "sudo yum install -y python3",
+      "sudo yum install -y python3-pip",
+      "sudo pip3 install flask",
+      "echo 'export FLASK_APP=app.py' >> ~/.bashrc",
+      "source ~/.bashrc"
     ]
   }
 
   tags = {
-    Name = "apache"
+    Name = "flask-server"
   }
+}
+output "public_ip" {
+  value = aws_instance.apache.public_ip
 }
