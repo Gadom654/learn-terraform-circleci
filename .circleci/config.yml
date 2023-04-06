@@ -12,7 +12,7 @@ jobs:
           name: terraform init & plan
           command: |
             terraform init -input=false
-            terraform plan -out tfapply -var-file terraform.tfvars -lock=false
+            terraform plan -out tfapply -lock=false
       - persist_to_workspace:
           root: .
           paths:
@@ -46,7 +46,7 @@ jobs:
       - run:
           name: terraform create destroy plan
           command: |
-            terraform plan -destroy -out tfdestroy -var-file terraform.tfvars -lock=false
+            terraform plan -destroy -out tfdestroy -lock=false
       - persist_to_workspace:
           root: .
           paths:
