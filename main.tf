@@ -83,6 +83,12 @@ resource "aws_security_group" "flask" {
   vpc_id      = aws_vpc.vpc.id
 }
 
+# Definujemy nazwę dla klucza publicznego
+resource "aws_key_pair" "key" {
+  key_name   = "my-key"
+  public_key = file("~/.ssh/my-key.pub")
+}
+
 # Create EC2 instance for Apache server
 resource "aws_instance" "apache" {
   ami           = "ami-0fa03365cde71e0ab"
