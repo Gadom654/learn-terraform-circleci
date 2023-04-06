@@ -62,13 +62,13 @@ resource "aws_security_group" "web" {
     security_groups = [aws_security_group.flask.id]
   }
   
-  # Zamykamy port 22 z publicznej sieci
-  egress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # Open for testing # Zamykamy port 22 z publicznej sieci
+  # egress {
+  #   from_port   = 22
+  #   to_port     = 22
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 }
 
 # Definiujemy regułę dla serwera Apache
