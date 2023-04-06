@@ -9,8 +9,6 @@ jobs:
     steps:
       - checkout
       - run:
-          command: ls -ltra ~/.ssh/
-      - run:
           name: terraform init & plan
           command: |
             terraform init -input=false

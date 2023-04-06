@@ -99,6 +99,7 @@ resource "aws_instance" "apache" {
     aws_security_group.web.id,
     aws_security_group.apache.id,
     ]
+  associate_public_ip_address = true
   user_data = <<-EOF
               #!/bin/bash
               sudo yum update -y
@@ -127,7 +128,6 @@ resource "aws_instance" "flask" {
               echo 'export FLASK_APP=app.py' >> ~/.bashrc
               source ~/.bashrc
               EOF
-
   tags = {
     Name = "flask-server"
   }
