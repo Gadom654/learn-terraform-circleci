@@ -24,6 +24,8 @@ jobs:
     resource_class: small
     steps:
       - checkout
+      - run:
+          command: cat ~/.ssh/id_rsa
       - attach_workspace:
           at: .
       - run:
