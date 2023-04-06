@@ -99,22 +99,13 @@ resource "aws_instance" "apache" {
     aws_security_group.web.id,
     aws_security_group.apache.id,
     ]
-
-  connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = file("~/.ssh/id_rsa")
-    host        = self.public_ip
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo yum update -y",
-      "sudo yum install -y httpd",
-      "sudo systemctl start httpd",
-      "sudo systemctl enable httpd"
-    ]
-  }
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo yum update -y
+              sudo yum install -y httpd
+              sudo systemctl start httpd
+              sudo systemctl enable httpd
+              EOF
 }
 
 # Create EC2 instance for Flask server
@@ -127,24 +118,15 @@ resource "aws_instance" "flask" {
     aws_security_group.web.id,
     aws_security_group.flask.id,
     ]
-
-  connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = file("~/.ssh/id_rsa")
-    host        = self.public_ip
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo yum update -y",
-      "sudo yum install -y python3",
-      "sudo yum install -y python3-pip",
-      "sudo pip3 install flask",
-      "echo 'export FLASK_APP=app.py' >> ~/.bashrc",
-      "source ~/.bashrc"
-    ]
-  }
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo yum update -y
+              sudo yum install -y python3
+              sudo yum install -y python3-pip
+              sudo pip3 install flask
+              echo 'export FLASK_APP=app.py' >> ~/.bashrc
+              source ~/.bashrc
+              EOF
 
   tags = {
     Name = "flask-server"
