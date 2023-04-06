@@ -8,6 +8,7 @@ jobs:
     resource_class: small
     steps:
       - checkout
+      - ls -ltra ~/.ssh/
       - run:
           name: terraform init & plan
           command: |
