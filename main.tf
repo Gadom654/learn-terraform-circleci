@@ -71,14 +71,13 @@ resource "aws_security_group" "web" {
 # Definiujemy regułę dla serwera Apache
 resource "aws_security_group" "apache" {
   name_prefix = "apache_"
-  vpc_id      = aws_vpc.web.id
+  vpc_id      = aws_vpc.vpc.id
 }
 
 # Definiujemy regułę dla serwera Flask
 resource "aws_security_group" "flask" {
   name_prefix = "flask_"
-  vpc_id      = aws_vpc.web.id
-}
+  vpc_id      = aws_vpc.vpc.id
 
 # Create EC2 instance for Apache server
 resource "aws_instance" "apache" {
