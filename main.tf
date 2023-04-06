@@ -17,6 +17,11 @@ resource "aws_subnet" "web_subnet" {
   vpc_id     = aws_vpc.vpc.id
 }
 
+# Create internet gateway
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.vpc.id
+}
+
 # Definiujemy grupę bezpieczeństwa
 resource "aws_security_group" "web" {
   name_prefix = "web_"
@@ -62,13 +67,13 @@ resource "aws_security_group" "web" {
     security_groups = [aws_security_group.flask.id]
   }
   
-  # Open for testing # Zamykamy port 22 z publicznej sieci
-  # egress {
-  #   from_port   = 22
-  #   to_port     = 22
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
+  # Zamykamy port 22 z publicznej sieci
+  egress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 # Definiujemy regułę dla serwera Apache
