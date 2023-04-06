@@ -32,7 +32,7 @@ resource "aws_security_group" "web" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
+    cidr_blocks = [aws_vpc.vpc.cidr_block]
   }
 
   # Otwieramy port 5000 tylko dla połączeń z wewnętrznej sieci
@@ -40,7 +40,7 @@ resource "aws_security_group" "web" {
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
+    cidr_blocks = [aws_vpc.vpc.cidr_block]
   }
   
   # Otwieramy port 80 między serwerami
