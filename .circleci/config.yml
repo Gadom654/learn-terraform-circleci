@@ -9,7 +9,7 @@ jobs:
     steps:
       - checkout
       - run:
-        command: ls -ltra ~/.ssh/
+          command: ls -ltra ~/.ssh/
       - run:
           name: terraform init & plan
           command: |
