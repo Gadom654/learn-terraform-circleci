@@ -17,11 +17,6 @@ resource "aws_subnet" "web_subnet" {
   vpc_id     = aws_vpc.vpc.id
 }
 
-# Create internet gateway
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.vpc.id
-}
-
 # Definiujemy grupę bezpieczeństwa
 resource "aws_security_group" "web" {
   name_prefix = "web_"
