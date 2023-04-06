@@ -85,7 +85,7 @@ resource "aws_security_group" "flask" {
 
 # Create EC2 instance for Apache server
 resource "aws_instance" "apache" {
-  ami           = "ami-0c94855ba95c71c99"
+  ami           = "ami-0fa03365cde71e0ab"
   instance_type = "t2.micro"
   key_name      = "my-key"
   subnet_id     = aws_subnet.web_subnet.id
@@ -113,7 +113,7 @@ resource "aws_instance" "apache" {
 
 # Create EC2 instance for Flask server
 resource "aws_instance" "flask" {
-  ami           = "ami-0c94855ba95c71c99"
+  ami           = "ami-0fa03365cde71e0ab"
   instance_type = "t2.micro"
   key_name      = "my-key"
   subnet_id     = aws_subnet.web_subnet.id
