@@ -26,6 +26,19 @@ resource "aws_route_table" "vpc_route_table" {
   }
 }
 
+resource "aws_route53_zone" "fairprice" {
+  name = "fairprice.com"
+}
+
+resource "aws_route53_record" "fairprice" {
+  zone_id = aws_route53_zone.fairprice.id
+  name    = "www.fairprice.com"
+  type    = "A"
+  ttl     = "300"
+
+  records = [aws_instance.apache.public_ip]
+}
+
 resource "aws_route_table_association" "web_subnet_association" {
   subnet_id      = aws_subnet.web_subnet.id
   route_table_id = aws_route_table.vpc_route_table.id
