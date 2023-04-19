@@ -104,9 +104,19 @@ resource "aws_security_group" "flask" {
   vpc_id      = aws_vpc.vpc.id
 }
 
+resource "tls_private_key" "example_keypair" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
+data "tls_public_key" "example_keypair" {
+  private_key_pem = tls_private_key.example_keypair.private_key_pem
+}
+
 # Definujemy nazwę dla klucza publicznego
 resource "aws_key_pair" "key" {
   key_name   = "my-key"
+  public_key = data.tls_public_key.example_keypair.public_key_pem
 }
 
 # Create EC2 instance for Apache server
