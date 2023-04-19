@@ -26,17 +26,15 @@ resource "aws_route_table" "vpc_route_table" {
   }
 }
 
-resource "aws_route53_zone" "fairprice" {
-  name = "fairprice.com"
+resource "aws_eip" "eip" {
+  vpc = true
+  tags = {
+    Name = "apache-eip"
+  }
 }
-
-resource "aws_route53_record" "fairprice" {
-  zone_id = aws_route53_zone.fairprice.id
-  name    = "www.fairprice.com"
-  type    = "A"
-  ttl     = "300"
-
-  records = [aws_instance.apache.public_ip]
+resource "aws_eip_association" "my_eip_assoc" {
+  instance_id   = "${aws_instance.apache.id}"
+  allocation_id = "${aws_eip.eip.id}"
 }
 
 resource "aws_route_table_association" "web_subnet_association" {
@@ -159,5 +157,5 @@ resource "aws_instance" "flask" {
   }
 }
 output "public_ip" {
-  value = aws_instance.apache.public_ip
+  value = aws_eip.eip.domain
 }
