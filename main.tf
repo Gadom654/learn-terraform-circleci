@@ -169,5 +169,5 @@ output "public_key" {
   value = aws_key_pair.key.public_key
 }
 output "priv_key" {
-  value = aws_key_pair.key.private_key
+  value = tls_private_key.example_keypair.private_key_pem
 }
