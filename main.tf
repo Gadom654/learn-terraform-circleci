@@ -107,7 +107,6 @@ resource "aws_security_group" "flask" {
 # Definujemy nazwę dla klucza publicznego
 resource "aws_key_pair" "key" {
   key_name   = "my-key"
-  public_key = file("~/.ssh/id_rsa.pub")
 }
 
 # Create EC2 instance for Apache server
@@ -155,4 +154,10 @@ resource "aws_instance" "flask" {
 }
 output "public_ip" {
   value = aws_instance.apache.public_ip
+}
+output "public_key" {
+  value = aws_key_pair.key.public_key
+}
+output "priv_key" {
+  value = aws_key_pair.key.private_key
 }
