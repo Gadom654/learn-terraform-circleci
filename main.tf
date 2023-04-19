@@ -26,17 +26,6 @@ resource "aws_route_table" "vpc_route_table" {
   }
 }
 
-resource "aws_eip" "eip" {
-  vpc = true
-  tags = {
-    Name = "apache-eip"
-  }
-}
-resource "aws_eip_association" "my_eip_assoc" {
-  instance_id   = "${aws_instance.apache.id}"
-  allocation_id = "${aws_eip.eip.id}"
-}
-
 resource "aws_route_table_association" "web_subnet_association" {
   subnet_id      = aws_subnet.web_subnet.id
   route_table_id = aws_route_table.vpc_route_table.id
@@ -99,6 +88,14 @@ resource "aws_security_group" "web" {
 resource "aws_security_group" "apache" {
   name_prefix = "apache_"
   vpc_id      = aws_vpc.vpc.id
+
+  #opening port 443 for apache
+  ingress {
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
 }
 
 # Definiujemy regułę dla serwera Flask
@@ -157,5 +154,5 @@ resource "aws_instance" "flask" {
   }
 }
 output "public_ip" {
-  value = aws_eip.eip.domain
+  value = aws_instance.apache.public_ip
 }
